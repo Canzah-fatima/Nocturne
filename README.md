@@ -1,88 +1,574 @@
-# NOCTURNE — E-Commerce Storefront
+# 🌑 NOCTURNE
 
-An ultra-minimalist tech/luxury e-commerce app built with Next.js (App
-Router), Tailwind CSS, Framer Motion, Lucide icons, and Zustand — matching
-the obsidian/parchment/neon-cyan aesthetic and feature spec from the brief.
+> **A premium full-stack luxury e-commerce platform engineered for performance, security, and modern web architecture.**
 
-## Stack
+NOCTURNE is a production-grade luxury storefront built with **Next.js 15**, **TypeScript**, **Supabase**, **Tailwind CSS**, **Zustand**, and **Framer Motion**. It combines an ultra-minimal aesthetic with enterprise-level backend architecture, featuring secure server-side pricing, atomic order processing, SSR authentication, inventory protection, and hydration-safe client state.
 
-- **Frontend:** Next.js 16 (App Router, Turbopack), Tailwind CSS v4,
-  Framer Motion, Lucide React, Zustand (cart state, persisted to
-  `localStorage`)
-- **Backend:** Next.js Route Handlers (`app/api/**`)
-- **Auth:** JWT in an httpOnly cookie (`jose` + `bcryptjs`), no third-party
-  auth provider required
-- **Database:** see "About the database layer" below
+---
 
-## Getting started
+## ✨ Preview
+
+> **Minimal. Elegant. Secure.**
+
+* 🛍️ Luxury product catalog
+* 🔐 Cookie-based SSR authentication
+* 🛒 Persistent shopping cart
+* 💳 Secure checkout
+* 📦 Inventory management
+* ⭐ Dynamic customer reviews
+* 📱 Fully responsive design
+* ⚡ Fast App Router architecture
+
+---
+
+# 🚀 Features
+
+## 🔒 Enterprise-Level Security
+
+* Zero-trust server-side price validation
+* Server-calculated taxes and shipping
+* Protected checkout flow
+* Inventory verification before payment
+* Open redirect protection
+* PostgREST injection sanitization
+* Secure cookie-based authentication
+* Server-only service role credentials
+
+---
+
+## 🛒 Shopping Experience
+
+* Modern luxury storefront
+* Category browsing
+* Live product search
+* Price filtering
+* Product variants
+
+  * Colors
+  * Sizes
+* Persistent shopping cart
+* Guest & authenticated checkout
+* Responsive product pages
+
+---
+
+## 💳 Secure Checkout
+
+The client only submits:
+
+```text
+Product ID
+Quantity
+Selected Color
+Selected Size
+```
+
+Everything else is calculated securely on the server:
+
+* Latest product prices
+* Inventory availability
+* Subtotal
+* 5% Sales Tax
+* Flat Shipping Fee
+* Final Total (PKR)
+
+This completely prevents client-side cart manipulation.
+
+---
+
+## 📦 Inventory Protection
+
+Every order is processed safely using atomic operations.
+
+During checkout:
+
+1. Fetch latest product data
+2. Validate stock
+3. Calculate totals
+4. Create order
+5. Create order items
+6. Deduct inventory
+
+If **any** step fails, the transaction is rolled back to maintain database consistency.
+
+---
+
+## 👤 Authentication
+
+Powered by **Supabase SSR Authentication**
+
+Features include:
+
+* Cookie-based sessions
+* Edge Middleware protection
+* Server Components authentication
+* Protected profile pages
+* Protected checkout
+* Persistent login sessions
+
+---
+
+## ⭐ Reviews System
+
+Dynamic review system with:
+
+* Verified buyer badges
+* Average rating calculation
+* Automatic aggregate updates
+* Animated marquee testimonials
+* Hover pause animation
+* Dynamic PostgreSQL data
+
+---
+
+## 🎨 Design System
+
+NOCTURNE follows an **Obsidian Luxury** design language.
+
+Features include:
+
+* Ultra-minimal UI
+* Premium typography
+* Soft glow effects
+* Glassmorphism accents
+* Dark aesthetic
+* Smooth animations
+* Accessible dialogs
+* Responsive layouts
+
+---
+
+# 🏗 Tech Stack
+
+| Category             | Technologies            |
+| -------------------- | ----------------------- |
+| **Framework**        | Next.js 15 (App Router) |
+| **Language**         | TypeScript              |
+| **Database**         | PostgreSQL              |
+| **Backend**          | Supabase                |
+| **Authentication**   | Supabase SSR            |
+| **State Management** | Zustand                 |
+| **Styling**          | Tailwind CSS            |
+| **Animations**       | Framer Motion           |
+| **Icons**            | Lucide React            |
+| **Deployment**       | Vercel                  |
+| **Currency**         | PKR (en-PK)             |
+
+---
+
+# 🏛 Architecture
+
+```text
+                    Client Browser
+                          │
+          ┌───────────────┴────────────────┐
+          │                                │
+          │                                │
+ Navigation                     Shopping Cart
+          │                                │
+          ▼                                ▼
+ Edge Middleware                Zustand Store
+ Cookie Validation         Hydration Safe Storage
+          │
+          ▼
+ Protected Routes
+          │
+          ▼
+     Checkout Request
+          │
+          ▼
+   POST /api/orders
+          │
+          ├──────────────► Fetch Products
+          │
+          ├──────────────► Validate Inventory
+          │
+          ├──────────────► Calculate Prices
+          │
+          ├──────────────► Calculate Tax
+          │
+          ├──────────────► Create Order
+          │
+          ├──────────────► Insert Items
+          │
+          └──────────────► Update Inventory
+```
+
+---
+
+# 🗃 Database Schema
+
+## Product
+
+```sql
+Product
+--------
+id
+title
+description
+price
+category
+stockCount
+images
+colors
+sizes
+badge
+rating
+reviewCount
+createdAt
+```
+
+---
+
+## Order
+
+```sql
+Order
+--------
+id
+userId
+totalAmount
+currency
+status
+address
+createdAt
+```
+
+---
+
+## Order Item
+
+```sql
+OrderItem
+-------------
+id
+orderId
+productId
+title
+price
+quantity
+color
+size
+image
+```
+
+---
+
+## Review
+
+```sql
+Review
+----------
+id
+productId
+name
+text
+rating
+role
+createdAt
+```
+
+---
+
+# 🔌 API Endpoints
+
+| Endpoint             | Method | Auth     | Description                 |
+| -------------------- | ------ | -------- | --------------------------- |
+| `/api/products`      | GET    | ❌        | Fetch products with filters |
+| `/api/products/[id]` | GET    | ❌        | Product details             |
+| `/api/orders`        | GET    | ✅        | User order history          |
+| `/api/orders`        | POST   | Optional | Create secure order         |
+| `/api/reviews`       | POST   | Optional | Submit review               |
+| `/api/newsletter`    | POST   | ❌        | Newsletter subscription     |
+
+---
+
+# 📂 Project Structure
+
+```text
+app/
+├── (shop)
+├── api/
+├── checkout/
+├── profile/
+├── products/
+
+components/
+├── ui/
+├── cart/
+├── product/
+├── layout/
+
+lib/
+├── supabase/
+├── utils/
+
+store/
+├── cart-store.ts
+
+middleware.ts
+
+public/
+
+styles/
+```
+
+---
+
+# ⚙️ Installation
+
+## 1. Clone the repository
+
+```bash
+git clone https://github.com/your-username/nocturne-shop.git
+
+cd nocturne-shop
+```
+
+---
+
+## 2. Install dependencies
 
 ```bash
 npm install
+```
+
+---
+
+## 3. Configure Environment Variables
+
+Create a `.env.local` file.
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your-project-url
+
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+```
+
+---
+
+## 4. Start the development server
+
+```bash
 npm run dev
 ```
 
-Open http://localhost:3000. The first account you register becomes an
-`ADMIN` (there's no admin UI yet — it's just a role flag on the seed data
-model, ready to build on).
-
-## About the database layer
-
-`prisma/schema.prisma` is the real, intended data model — `User`,
-`Product`, `Order`, `OrderItem`, with proper relations and a Postgres
-datasource. That's the schema to run `prisma migrate` against in a normal
-environment.
-
-This build was produced in a sandboxed environment that couldn't reach
-Prisma's binary CDN or a live Postgres instance, so `lib/db.ts` implements
-the identical shape as a small file-backed store (`data/db.json`,
-auto-created and seeded on first run) so the app is fully functional
-offline. Every function in `lib/db.ts` maps 1:1 to a Prisma call, e.g.:
-
-```ts
-// lib/db.ts                          // Prisma equivalent
-getProducts({ category })             // prisma.product.findMany({ where: { category } })
-createOrder(order)                    // prisma.order.create({ data: { ... } })
-getOrdersByUser(userId)                // prisma.order.findMany({ where: { userId } })
-```
-
-**To switch to real Postgres:** install `@prisma/client` (already in
-`package.json`), set `DATABASE_URL` in `.env`, run
-`npx prisma migrate dev`, and swap the bodies of the functions in
-`lib/db.ts` for the equivalent `prisma.*` calls. The function signatures
-and return shapes were designed to make that a mechanical swap.
-
-## Feature coverage
-
-- Floating blur navbar, animated cart badge, mobile menu
-- Bento-grid homepage showcase + bestsellers row
-- Shop page: category, price-range, and sort filters + search
-- Product detail: image gallery, color/size variants, live stock
-  indicator, animated spec/shipping/care accordion, related products
-- Slide-out cart drawer: live subtotal/shipping/tax/total, quantity
-  controls, animated item removal
-- Single-page checkout: validated shipping + simulated payment form
-- Auth: register / login / logout, httpOnly JWT session cookie
-- Profile page: order history with status tags
-- Accessibility: semantic landmarks, ARIA on interactive controls
-  (accordion, dialog, tabs, form errors), visible focus rings,
-  `prefers-reduced-motion` respected
-
-## Project structure
+Open:
 
 ```
-app/
-  page.tsx                 Homepage
-  shop/page.tsx             Product grid + filters
-  product/[id]/page.tsx      Product detail
-  checkout/page.tsx          Checkout
-  login/, register/          Auth pages
-  profile/page.tsx           Order history
-  api/
-    auth/{register,login,logout,me}/route.ts
-    products/route.ts, products/[id]/route.ts
-    orders/route.ts
-components/                 UI components (Navbar, CartDrawer, ProductCard, ...)
-lib/                        db.ts, auth.ts, types.ts, format.ts
-store/cart.ts                Zustand cart store
-prisma/schema.prisma          Real Postgres schema (see above)
+http://localhost:3000
 ```
+
+---
+
+# 📜 Available Scripts
+
+```bash
+npm run dev
+```
+
+Runs the development server.
+
+---
+
+```bash
+npm run build
+```
+
+Creates an optimized production build.
+
+---
+
+```bash
+npm run start
+```
+
+Starts the production server.
+
+---
+
+```bash
+npm run lint
+```
+
+Runs ESLint.
+
+---
+
+# 🔒 Security
+
+NOCTURNE follows a **Zero Trust** architecture.
+
+### ✔ Server-side pricing
+
+Prices are never trusted from the client.
+
+---
+
+### ✔ Inventory validation
+
+Every purchase validates stock before order creation.
+
+---
+
+### ✔ Transaction safety
+
+Orders roll back automatically if any operation fails.
+
+---
+
+### ✔ Secure authentication
+
+* HTTP Cookies
+* SSR Authentication
+* Middleware Protection
+
+---
+
+### ✔ Input sanitization
+
+Search and filter parameters are cleaned before reaching PostgREST.
+
+---
+
+### ✔ Protected redirects
+
+Only safe internal routes are allowed after login.
+
+---
+
+# 🌍 Localization
+
+* Currency: **Pakistani Rupees (PKR)**
+* Locale: **en-PK**
+* Localized number formatting
+* Localized date formatting
+
+---
+
+# ⚡ Performance Highlights
+
+* Next.js 15 App Router
+* React Server Components
+* Edge Middleware
+* Hydration-safe Zustand persistence
+* Optimized client/server rendering
+* Dynamic route handlers
+* Lazy loading
+* Production-ready architecture
+
+---
+
+# 📸 Screenshots
+
+> A quick look at NOCTURNE's user experience.
+
+## 🏠 Home Page
+
+![Home](https://github.com/user-attachments/assets/4a6e35fd-8566-419a-b70d-50f171c50e07)
+
+---
+
+## ✨ Featured Products
+
+![Featured Products](https://github.com/user-attachments/assets/d3b652a6-46b7-4fed-be20-1dd9b142c3fe)
+
+---
+
+## 🛍️ Product Details
+
+<img width="1366" height="640" alt="image" src="https://github.com/user-attachments/assets/6c2c8b2a-9182-4a85-8b26-a6c34364e00d" />
+
+---
+
+## 🛒 Shopping Cart
+
+![Shopping Cart](https://github.com/user-attachments/assets/0bb89092-2809-4c47-9366-202b6da48104)
+
+---
+
+## 💳 Checkout
+
+<img width="1366" height="637" alt="image" src="https://github.com/user-attachments/assets/fb427c81-f954-453d-bedc-db2c2624d83c" />
+
+---
+
+## 👤 User Profile
+
+![User Profile](https://github.com/user-attachments/assets/4678b45e-3312-4daf-8f32-deb61ede356e)
+
+---
+
+## ⭐ Customer Reviews
+
+![Product Details](https://github.com/user-attachments/assets/3345aa50-f6f3-4068-a0c0-52fde5568491)
+
+---
+
+# 🛣 Roadmap
+
+* [ ] Wishlist
+* [ ] Stripe Payments
+* [ ] Order Tracking
+* [ ] Email Notifications
+* [ ] Admin Dashboard
+* [ ] Coupon System
+* [ ] Product Recommendations
+* [ ] Recently Viewed Products
+* [ ] Dark / Light Theme
+* [ ] Multi-language Support
+
+---
+
+# 🤝 Contributing
+
+Contributions are welcome!
+
+1. Fork the repository
+2. Create a feature branch
+
+```bash
+git checkout -b feature/my-feature
+```
+
+3. Commit your changes
+
+```bash
+git commit -m "Add amazing feature"
+```
+
+4. Push your branch
+
+```bash
+git push origin feature/my-feature
+```
+
+5. Open a Pull Request
+
+---
+
+# 📄 License
+
+Licensed under the **MIT License**.
+
+---
+
+## 👨‍💻 Built With
+
+* Next.js 15
+* TypeScript
+* Supabase
+* PostgreSQL
+* Zustand
+* Tailwind CSS
+* Framer Motion
+* Lucide React
+
+---
+
+<p align="center">
+  <strong>NOCTURNE</strong><br>
+  Crafted with precision, performance, and modern web technologies.
+</p>
