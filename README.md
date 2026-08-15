@@ -479,7 +479,7 @@ Only safe internal routes are allowed after login.
 
 ## 🛍️ Product Details
 
-<img width="1364" height="612" alt="image" src="https://github.com/user-attachments/assets/380b0926-438d-4eb5-ae2b-88cf83a8c613" />
+<img width="1362" height="639" alt="image" src="https://github.com/user-attachments/assets/9d10962c-f603-4d42-b468-bf99e4e1fca9" />
 
 ---
 
