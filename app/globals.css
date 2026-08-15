@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+:root {
+  --obsidian: #0d0d0d;
+  --obsidian-raised: #151517;
+  --obsidian-line: #232326;
+  --parchment: #fafafa;
+  --muted: #a1a1aa;
+  --accent: #00e5ff;
+  --accent-emerald: #10b981;
+}
+
+@theme inline {
+  --color-obsidian: var(--obsidian);
+  --color-obsidian-raised: var(--obsidian-raised);
+  --color-obsidian-line: var(--obsidian-line);
+  --color-parchment: var(--parchment);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-emerald: var(--accent-emerald);
+  --font-display: var(--font-space-grotesk);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--obsidian-line) transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--obsidian);
+  color: var(--parchment);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--obsidian);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.bg-noise {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(255, 255, 255, 0.035) 1px,
+    transparent 0
+  );
+  background-size: 22px 22px;
+}
+
+/* 1. Remove native browser focus outlines on inputs */
+input:focus,
+input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* 2. Override Chrome / Safari Autofill background & text colors */
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  /* Overrides Chrome's autofill background color */
+  -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+  /* Ensures white text color on autofill */
+  -webkit-text-fill-color: #ffffff !important;
+  /* Disables Chrome's default yellow/blue background transition */
+  transition: background-color 5000s ease-in-out 0s;
+}
